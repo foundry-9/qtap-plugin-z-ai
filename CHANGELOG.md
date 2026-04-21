@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.1.1
+
+### Fixed
+
+- Vision-capable models (`glm-4.5v`, `glm-4.6v`, `glm-4.6v-flashx`, `glm-4.6v-flash`, `glm-5v-turbo`) are now surfaced in the chat model picker even when Z.AI's `/models` endpoint omits them. `getAvailableModels` unions the API response with the static model catalog and filters out image-generation IDs, which are owned by the image provider.
+
 ## 1.1-dev
 
 ### Added
