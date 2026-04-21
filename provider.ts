@@ -30,6 +30,12 @@ const Z_AI_SUPPORTED_MIME_TYPES = [
 // Vision-capable model prefixes (accept images in input)
 const VISION_MODEL_PATTERNS = [/^glm-\d+(\.\d+)?v/i, /^glm-5v/i, /^autoglm-phone/i];
 
+// Keys in LLMParams.profileParameters that are forwarded verbatim to the Z.AI
+// request body. Allow-listed so a misconfigured profile can't override model,
+// messages, stream, etc. See https://docs.z.ai — `thinking` toggles reasoning
+// on GLM-4.6V / GLM-4.5 family; `do_sample` disables sampling entirely.
+const Z_AI_PROFILE_PARAM_ALLOWLIST = ['thinking', 'do_sample'] as const;
+
 function isVisionModel(model: string): boolean {
   return VISION_MODEL_PATTERNS.some((re) => re.test(model));
 }
@@ -182,6 +188,21 @@ export class ZAIProvider implements TextProvider {
   }
 
   /**
+   * Forward allow-listed Z.AI-specific parameters from the profile into the
+   * request body. Caller supplies the `body` object; we mutate it in place.
+   */
+  private applyProfileParameters(body: Record<string, unknown>, params: LLMParams): void {
+    const profile = params.profileParameters;
+    if (!profile || typeof profile !== 'object') return;
+    for (const key of Z_AI_PROFILE_PARAM_ALLOWLIST) {
+      const value = (profile as Record<string, unknown>)[key];
+      if (value !== undefined) {
+        body[key] = value;
+      }
+    }
+  }
+
+  /**
    * Build the z.ai web_search tool definition.
    * This is Z.AI-specific — it coexists with normal function tools in the tools array.
    * See: https://docs.z.ai/guides/tools/web-search
@@ -240,6 +261,8 @@ export class ZAIProvider implements TextProvider {
         };
       }
     }
+
+    this.applyProfileParameters(body, params);
 
     const response = (await client.chat.completions.create(
       body as unknown as OpenAI.Chat.Completions.ChatCompletionCreateParamsNonStreaming
@@ -324,6 +347,8 @@ export class ZAIProvider implements TextProvider {
         };
       }
     }
+
+    this.applyProfileParameters(body, params);
 
     const stream = (await client.chat.completions.create(
       body as unknown as OpenAI.Chat.Completions.ChatCompletionCreateParamsStreaming

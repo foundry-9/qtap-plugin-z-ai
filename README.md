@@ -37,6 +37,9 @@ The plugin targets `https://api.z.ai/api/paas/v4`. No base URL configuration is 
 | Model ID | Context | Images |
 | --- | --- | --- |
 | `glm-4.6v` | 64K | ✓ |
+| `glm-4.6v-flashx` | 64K | ✓ |
+| `glm-4.6v-flash` | 64K | ✓ |
+| `glm-5v-turbo` | 64K | ✓ |
 | `glm-4.5v` | 64K | ✓ |
 
 Attachment limits: 5 MB per image, max 6000×6000 px, MIME types `image/jpeg`, `image/png`, `image/gif`, `image/webp`.

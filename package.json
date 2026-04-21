@@ -1,6 +1,6 @@
 {
   "name": "@quilltap/qtap-plugin-z-ai",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Z.AI GLM provider plugin for Quilltap",
   "main": "dist/index.js",
   "license": "MIT",
