@@ -1,0 +1,53 @@
+{
+  "name": "@quilltap/qtap-plugin-z-ai",
+  "version": "1.0.0",
+  "description": "Z.AI GLM provider plugin for Quilltap",
+  "main": "dist/index.js",
+  "license": "MIT",
+  "author": "Charles Sebold <csebold@gmail.com>",
+  "keywords": [
+    "quilltap",
+    "plugin",
+    "z.ai",
+    "zai",
+    "glm",
+    "cogview",
+    "llm",
+    "chat",
+    "image-generation"
+  ],
+  "files": [
+    "dist",
+    "manifest.json"
+  ],
+  "type": "commonjs",
+  "scripts": {
+    "build": "node esbuild.config.mjs",
+    "clean": "rm -rf dist",
+    "prepublishOnly": "npm run build"
+  },
+  "peerDependencies": {
+    "@quilltap/plugin-types": "^2.2.0",
+    "@quilltap/plugin-utils": "^2.2.0"
+  },
+  "peerDependenciesMeta": {
+    "@quilltap/plugin-types": {
+      "optional": false
+    },
+    "@quilltap/plugin-utils": {
+      "optional": false
+    }
+  },
+  "devDependencies": {
+    "@quilltap/plugin-types": "^2.2.0",
+    "@quilltap/plugin-utils": "^2.2.0",
+    "esbuild": "^0.28.0",
+    "typescript": "^5.4.0"
+  },
+  "dependencies": {
+    "openai": "^6.34.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
