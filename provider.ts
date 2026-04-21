@@ -17,6 +17,7 @@ import type {
   FileAttachment,
 } from './types';
 import { createPluginLogger, getQuilltapUserAgent } from '@quilltap/plugin-utils';
+import { STATIC_CHAT_MODEL_IDS, IMAGE_GEN_MODEL_PATTERN } from './models';
 
 const logger = createPluginLogger('qtap-plugin-z-ai');
 
@@ -445,16 +446,23 @@ export class ZAIProvider implements TextProvider {
   }
 
   async getAvailableModels(apiKey: string): Promise<string[]> {
+    // Z.AI's /models endpoint doesn't always list vision-capable models
+    // (e.g. glm-4.5v, glm-4.6v family). Union the API list with our static
+    // chat-model catalog, filtering image-generation IDs which are owned by
+    // the image provider.
+    let apiIds: string[] = [];
     try {
       const client = this.createClient(apiKey);
       const models = await client.models.list();
-      return models.data.map((m) => m.id).sort();
+      apiIds = models.data.map((m) => m.id);
     } catch (error) {
       logger.warn(
         'Failed to fetch Z.AI models dynamically; falling back to static list',
         { context: 'ZAIProvider.getAvailableModels' }
       );
-      return [];
     }
+    const merged = new Set<string>(apiIds.filter((id) => !IMAGE_GEN_MODEL_PATTERN.test(id)));
+    for (const id of STATIC_CHAT_MODEL_IDS) merged.add(id);
+    return Array.from(merged).sort();
   }
 }

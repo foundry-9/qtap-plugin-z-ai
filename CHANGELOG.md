@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.1.2
+
+### Fixed
+
+- Moved the static-model merge into `ZAIProvider.getAvailableModels` (the method the host actually invokes via `createLLMProvider`). In 1.1.1 the merge was only in the plugin-level wrapper, which the server bypasses, so vision models were still missing from the chat picker.
+
 ## 1.1.1
 
 ### Fixed
