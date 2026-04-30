@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.1.3
+
+### Added
+
+- Extract `usage.prompt_tokens_details.cached_tokens` from Z.AI responses (sync and streaming) and emit it as `cacheUsage: { cacheReadInputTokens, cachedTokens }`. Previously the host had no way to observe whether GLM Context Caching was hitting; cache reads on chat-message turns now show up in the LLM logs alongside OpenAI/Anthropic.
+
 ## 1.1.2
 
 ### Fixed

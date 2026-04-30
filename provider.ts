@@ -290,6 +290,12 @@ export class ZAIProvider implements TextProvider {
         };
       });
 
+    const cachedTokens = (response.usage as { prompt_tokens_details?: { cached_tokens?: number } } | undefined)
+      ?.prompt_tokens_details?.cached_tokens;
+    const cacheUsage = cachedTokens !== undefined && cachedTokens > 0
+      ? { cacheReadInputTokens: cachedTokens, cachedTokens }
+      : undefined;
+
     return {
       content: msg.content ?? '',
       finishReason: choice.finish_reason,
@@ -301,6 +307,7 @@ export class ZAIProvider implements TextProvider {
       raw: response,
       toolCalls: toolCalls.length > 0 ? toolCalls : undefined,
       attachmentResults,
+      ...(cacheUsage ? { cacheUsage } : {}),
     };
   }
 
@@ -415,6 +422,12 @@ export class ZAIProvider implements TextProvider {
       usage,
     };
 
+    const cachedTokens = (usage as { prompt_tokens_details?: { cached_tokens?: number } } | null)
+      ?.prompt_tokens_details?.cached_tokens;
+    const cacheUsage = cachedTokens !== undefined && cachedTokens > 0
+      ? { cacheReadInputTokens: cachedTokens, cachedTokens }
+      : undefined;
+
     yield {
       content: '',
       done: true,
@@ -426,6 +439,7 @@ export class ZAIProvider implements TextProvider {
       toolCalls: toolCalls.length > 0 ? toolCalls : undefined,
       attachmentResults,
       rawResponse,
+      ...(cacheUsage ? { cacheUsage } : {}),
     };
   }
 
